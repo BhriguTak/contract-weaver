@@ -447,6 +447,140 @@ export const clausesCTR002: Clause[] = [
   { id: "CL-002-06", contractId: "CTR-002", type: "Intellectual Property", text: "Section 12.1 is amended: All intellectual property rights in any deliverables created by TechVentures Inc. specifically for Acme Corp shall be assigned to Acme Corp upon acceptance (rather than upon full payment). TechVentures Inc. grants Acme Corp a perpetual, royalty-free license to use any TechVentures Inc. pre-existing IP incorporated into deliverables.", confidence: 78, confidenceLevel: "low", obligations: ["IP assignment upon acceptance (changed from payment)", "Perpetual license for pre-existing IP (new)"], keyDates: [], monetaryValues: [], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 1901, endOffset: 2350 },
 ];
 
+// ─── Mock Clauses for CTR-004 (SOW #1 — Cloud Migration) ─────────────────────
+
+export const clausesCTR004: Clause[] = [
+  { id: "CL-004-01", contractId: "CTR-004", type: "Payment Terms", text: "Acme Corp shall pay TechVentures Inc. a fixed fee of $1,250,000 for the Cloud Migration project, payable in four equal quarterly installments of $312,500 each. The first installment is due within fifteen (15) days of the Effective Date. Subsequent installments are due on the first business day of each calendar quarter.", confidence: 95, confidenceLevel: "high", obligations: ["Quarterly payments of $312,500", "First payment within 15 days"], keyDates: ["15 days from Effective Date", "Quarterly due dates"], monetaryValues: ["$1,250,000 total", "$312,500 per quarter"], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 0, endOffset: 420 },
+  { id: "CL-004-02", contractId: "CTR-004", type: "Intellectual Property", text: "All cloud architecture designs, migration scripts, automation tools, and documentation produced under this Statement of Work shall be considered 'Work Product' and shall be owned exclusively by Acme Corp upon delivery and acceptance. TechVentures Inc. retains a non-exclusive license to use general methodologies and frameworks developed during the engagement for other clients.", confidence: 89, confidenceLevel: "medium", obligations: ["IP ownership transfers to Acme Corp", "Non-exclusive license retained by TechVentures"], keyDates: [], monetaryValues: [], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 421, endOffset: 850 },
+  { id: "CL-004-03", contractId: "CTR-004", type: "Termination", text: "Either party may terminate this Statement of Work for convenience upon thirty (30) days' written notice. In the event of termination for convenience by Acme Corp, TechVentures Inc. shall be entitled to payment for all work completed through the effective date of termination, plus any reasonable wind-down costs not to exceed $50,000.", confidence: 93, confidenceLevel: "high", obligations: ["30-day notice for termination", "Payment for completed work", "Wind-down cost cap"], keyDates: ["30 days written notice"], monetaryValues: ["$50,000 wind-down cap"], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 851, endOffset: 1280 },
+  { id: "CL-004-04", contractId: "CTR-004", type: "Warranty", text: "TechVentures Inc. warrants that all migration services shall be performed in a professional and workmanlike manner consistent with industry standards. TechVentures Inc. further warrants that the migrated systems shall achieve 99.5% uptime within sixty (60) days of go-live. Any defects identified within ninety (90) days of acceptance shall be remediated at no additional cost.", confidence: 91, confidenceLevel: "high", obligations: ["Professional service delivery", "99.5% uptime guarantee", "90-day defect remediation"], keyDates: ["60 days post go-live", "90 days post acceptance"], monetaryValues: [], partyNames: ["TechVentures Inc."], startOffset: 1281, endOffset: 1720 },
+  { id: "CL-004-05", contractId: "CTR-004", type: "Liability", text: "TechVentures Inc.'s aggregate liability under this Statement of Work shall not exceed the total fees paid or payable under this SOW. Neither party shall be liable for any loss of data during migration unless caused by gross negligence or willful misconduct, in which case the liable party shall bear full responsibility for data recovery costs.", confidence: 87, confidenceLevel: "medium", obligations: ["Liability cap at total SOW fees", "Data loss liability for gross negligence"], keyDates: [], monetaryValues: ["Total SOW fees cap"], partyNames: ["TechVentures Inc."], startOffset: 1721, endOffset: 2150 },
+  { id: "CL-004-06", contractId: "CTR-004", type: "Confidentiality", text: "During the course of the Cloud Migration, TechVentures Inc. personnel may have access to Acme Corp's proprietary systems, data, and infrastructure configurations. All such information shall be treated as Confidential Information under the Master Services Agreement. TechVentures Inc. shall ensure that all personnel with access sign individual confidentiality acknowledgments.", confidence: 94, confidenceLevel: "high", obligations: ["Treat migration data as confidential", "Individual confidentiality acknowledgments"], keyDates: [], monetaryValues: [], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 2151, endOffset: 2580 },
+  { id: "CL-004-07", contractId: "CTR-004", type: "Force Majeure", text: "Cloud service provider outages lasting more than seventy-two (72) consecutive hours shall constitute a force majeure event under this SOW. In such event, project timelines shall be adjusted day-for-day, and neither party shall be liable for resulting delays. TechVentures Inc. shall maintain documented contingency plans for provider outages.", confidence: 90, confidenceLevel: "high", obligations: ["Timeline adjustment for outages", "Maintain contingency plans"], keyDates: ["72-hour threshold"], monetaryValues: [], partyNames: ["TechVentures Inc."], startOffset: 2581, endOffset: 2980 },
+  { id: "CL-004-08", contractId: "CTR-004", type: "Insurance", text: "In addition to the insurance requirements set forth in the MSA, TechVentures Inc. shall maintain cyber liability insurance with a minimum coverage of $3,000,000 per occurrence for the duration of the Cloud Migration project and for twelve (12) months following project completion.", confidence: 92, confidenceLevel: "high", obligations: ["Cyber liability insurance $3M minimum", "Coverage extends 12 months post-completion"], keyDates: ["12 months post-completion"], monetaryValues: ["$3,000,000 cyber liability coverage"], partyNames: ["TechVentures Inc."], startOffset: 2981, endOffset: 3350 },
+  { id: "CL-004-09", contractId: "CTR-004", type: "Data Protection", text: "TechVentures Inc. shall implement encryption at rest (AES-256) and in transit (TLS 1.2 or higher) for all data handled during the migration. A detailed data mapping document shall be provided to Acme Corp prior to any data movement. TechVentures Inc. shall conduct a data protection impact assessment and share findings with Acme Corp within thirty (30) days of the Effective Date.", confidence: 88, confidenceLevel: "medium", obligations: ["AES-256 encryption at rest", "TLS 1.2+ in transit", "Data mapping document", "DPIA within 30 days"], keyDates: ["30 days from Effective Date"], monetaryValues: [], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 3351, endOffset: 3800 },
+  { id: "CL-004-10", contractId: "CTR-004", type: "Dispute Resolution", text: "Any disputes arising under this Statement of Work shall first be submitted to the project steering committee for resolution within fifteen (15) business days. If unresolved, disputes shall be escalated to senior management of both parties. If still unresolved after thirty (30) days, the dispute shall be submitted to binding arbitration in Wilmington, Delaware under the rules of the American Arbitration Association.", confidence: 96, confidenceLevel: "high", obligations: ["Steering committee resolution (15 days)", "Senior management escalation", "Binding arbitration if unresolved"], keyDates: ["15 business days", "30 days escalation"], monetaryValues: [], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 3801, endOffset: 4250 },
+  { id: "CL-004-11", contractId: "CTR-004", type: "Assignment", text: "TechVentures Inc. shall not assign or subcontract any portion of this Statement of Work without the prior written consent of Acme Corp, except that TechVentures Inc. may engage pre-approved subcontractors listed in Exhibit B. All subcontractors shall be bound by terms no less restrictive than this SOW.", confidence: 91, confidenceLevel: "high", obligations: ["No assignment without consent", "Pre-approved subcontractors only", "Subcontractor binding terms"], keyDates: [], monetaryValues: [], partyNames: ["Acme Corp", "TechVentures Inc."], startOffset: 4251, endOffset: 4600 },
+  { id: "CL-004-12", contractId: "CTR-004", type: "Governing Law", text: "This Statement of Work shall be governed by and construed in accordance with the laws of the State of Delaware, consistent with the governing law provisions of the Master Services Agreement. The parties consent to exclusive jurisdiction and venue in the courts of Delaware for any actions not subject to arbitration.", confidence: 97, confidenceLevel: "high", obligations: ["Delaware governing law", "Exclusive Delaware jurisdiction"], keyDates: [], monetaryValues: [], partyNames: [], startOffset: 4601, endOffset: 4950 },
+];
+
+// ─── Full Document Text ──────────────────────────────────────────────────────
+
+export const documentTexts: Record<string, string> = {
+  "CTR-004": `STATEMENT OF WORK #1 — CLOUD MIGRATION
+
+Effective Date: April 1, 2023
+Termination Date: March 31, 2024
+
+This Statement of Work ("SOW") is entered into pursuant to the Master Services Agreement dated January 15, 2023 (the "MSA") between Acme Corp, a Delaware corporation ("Client"), and TechVentures Inc., a Delaware corporation ("Service Provider").
+
+1. PROJECT OVERVIEW
+
+The purpose of this SOW is to define the scope, deliverables, timeline, and commercial terms for the migration of Client's on-premises infrastructure to a cloud-based environment. The migration shall encompass all production workloads, databases, and supporting services currently hosted in Client's primary data center.
+
+2. SCOPE OF SERVICES
+
+TechVentures Inc. shall provide the following services:
+(a) Infrastructure assessment and cloud readiness evaluation
+(b) Architecture design for target cloud environment (AWS/Azure)
+(c) Migration planning and dependency mapping
+(d) Data migration with zero-downtime cutover strategy
+(e) Application re-platforming and containerization where applicable
+(f) Security configuration and compliance validation
+(g) Performance testing and optimization
+(h) Knowledge transfer and operational documentation
+(i) Post-migration support for ninety (90) days
+
+3. PAYMENT TERMS
+
+${clauseText("CTR-004", "CL-004-01")}
+
+4. INTELLECTUAL PROPERTY
+
+${clauseText("CTR-004", "CL-004-02")}
+
+5. TERMINATION
+
+${clauseText("CTR-004", "CL-004-03")}
+
+6. WARRANTY
+
+${clauseText("CTR-004", "CL-004-04")}
+
+7. LIMITATION OF LIABILITY
+
+${clauseText("CTR-004", "CL-004-05")}
+
+8. CONFIDENTIALITY
+
+${clauseText("CTR-004", "CL-004-06")}
+
+9. FORCE MAJEURE
+
+${clauseText("CTR-004", "CL-004-07")}
+
+10. INSURANCE
+
+${clauseText("CTR-004", "CL-004-08")}
+
+11. DATA PROTECTION
+
+${clauseText("CTR-004", "CL-004-09")}
+
+12. DISPUTE RESOLUTION
+
+${clauseText("CTR-004", "CL-004-10")}
+
+13. ASSIGNMENT AND SUBCONTRACTING
+
+${clauseText("CTR-004", "CL-004-11")}
+
+14. GOVERNING LAW
+
+${clauseText("CTR-004", "CL-004-12")}
+
+15. PROJECT TIMELINE
+
+Phase 1 — Discovery & Assessment: April 1 – May 15, 2023
+Phase 2 — Architecture & Planning: May 16 – June 30, 2023
+Phase 3 — Migration Execution: July 1 – November 30, 2023
+Phase 4 — Testing & Optimization: December 1 – January 31, 2024
+Phase 5 — Go-Live & Hypercare: February 1 – March 31, 2024
+
+16. KEY PERSONNEL
+
+Project Lead (TechVentures): Michael Torres, Senior Cloud Architect
+Account Manager (TechVentures): Rachel Kim, Director of Client Services
+Project Sponsor (Acme Corp): Sarah Lopez, Project Director
+Technical Lead (Acme Corp): James Wright, VP of Infrastructure
+
+17. ACCEPTANCE CRITERIA
+
+Deliverables shall be deemed accepted upon written confirmation from Client's Project Sponsor or designee within ten (10) business days of delivery. If Client does not respond within such period, deliverables shall be deemed accepted.
+
+18. ENTIRE AGREEMENT
+
+This SOW, together with the MSA and all exhibits and schedules attached hereto, constitutes the entire agreement between the parties with respect to the subject matter hereof. In the event of any conflict between this SOW and the MSA, the terms of the MSA shall prevail unless expressly stated otherwise herein.
+
+IN WITNESS WHEREOF, the parties have executed this Statement of Work as of the Effective Date.
+
+ACME CORP                           TECHVENTURES INC.
+By: Sarah Lopez                     By: Rachel Kim
+Title: Project Director             Title: Director of Client Services
+Date: March 25, 2023               Date: March 27, 2023`,
+};
+
+// Helper to insert clause text into document templates
+function clauseText(contractId: string, clauseId: string): string {
+  const allClauses: Record<string, Clause[]> = {
+    "CTR-001": clausesCTR001,
+    "CTR-002": clausesCTR002,
+    "CTR-004": clausesCTR004,
+  };
+  const clause = allClauses[contractId]?.find(c => c.id === clauseId);
+  return clause?.text || "";
+}
+
 // ─── Pre-computed Diffs (CTR-001 vs CTR-002) ─────────────────────────────────
 
 export const diffsCTR001vsCTR002: ClauseDiff[] = [
@@ -548,7 +682,12 @@ export function getFamilyContracts(familyId: string): Contract[] {
 export function getContractClauses(contractId: string): Clause[] {
   if (contractId === "CTR-001") return clausesCTR001;
   if (contractId === "CTR-002") return clausesCTR002;
+  if (contractId === "CTR-004") return clausesCTR004;
   return [];
+}
+
+export function getDocumentText(contractId: string): string | undefined {
+  return documentTexts[contractId];
 }
 
 // ─── KPI Data ────────────────────────────────────────────────────────────────
