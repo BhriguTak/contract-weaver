@@ -1,9 +1,8 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FileText,
   Flag,
-  Check,
   ChevronRight,
   GitCompareArrows,
   Download,
@@ -12,7 +11,6 @@ import {
   User,
   Minus,
   Plus,
-  AlertTriangle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +21,7 @@ import {
   getContract,
   getContractClauses,
   getFamily,
+  getDocumentText,
   type Clause,
 } from "@/data/mock-data";
 
@@ -77,6 +76,116 @@ function EntityBadges({ clause }: { clause: Clause }) {
   );
 }
 
+/* ─── Render document with clause highlighting ──────── */
+function DigitizedDocument({
+  documentText,
+  clauses,
+  selectedClause,
+  fontSize,
+  clauseRefs,
+}: {
+  documentText: string;
+  clauses: Clause[];
+  selectedClause: string;
+  fontSize: number;
+  clauseRefs: React.MutableRefObject<Record<string, HTMLSpanElement | null>>;
+}) {
+  // Find all clause texts in the document and mark their positions
+  const segments: { text: string; clauseId: string | null; start: number }[] = [];
+  
+  // Build a map of clause text positions in the document
+  const clausePositions: { start: number; end: number; clauseId: string }[] = [];
+  clauses.forEach((clause) => {
+    const idx = documentText.indexOf(clause.text);
+    if (idx !== -1) {
+      clausePositions.push({ start: idx, end: idx + clause.text.length, clauseId: clause.id });
+    }
+  });
+  
+  // Sort by position
+  clausePositions.sort((a, b) => a.start - b.start);
+  
+  // Build segments
+  let cursor = 0;
+  clausePositions.forEach((pos) => {
+    if (pos.start > cursor) {
+      segments.push({ text: documentText.slice(cursor, pos.start), clauseId: null, start: cursor });
+    }
+    segments.push({ text: documentText.slice(pos.start, pos.end), clauseId: pos.clauseId, start: pos.start });
+    cursor = pos.end;
+  });
+  if (cursor < documentText.length) {
+    segments.push({ text: documentText.slice(cursor), clauseId: null, start: cursor });
+  }
+
+  return (
+    <div style={{ fontSize: `${fontSize}px`, lineHeight: 1.8 }} className="text-foreground whitespace-pre-wrap font-serif">
+      {segments.map((seg, i) => {
+        if (seg.clauseId) {
+          const isSelected = selectedClause === seg.clauseId;
+          return (
+            <span
+              key={i}
+              ref={(el) => { clauseRefs.current[seg.clauseId!] = el; }}
+              className={`transition-all duration-300 rounded px-0.5 ${
+                isSelected
+                  ? "bg-yellow-200 dark:bg-yellow-500/30 ring-2 ring-yellow-400 dark:ring-yellow-500/50"
+                  : "hover:bg-yellow-100/50 dark:hover:bg-yellow-500/10"
+              }`}
+              data-clause-id={seg.clauseId}
+            >
+              {seg.text}
+            </span>
+          );
+        }
+        return <span key={i}>{seg.text}</span>;
+      })}
+    </div>
+  );
+}
+
+/* ─── Fallback: clause-based document view ──────────── */
+function ClauseBasedDocument({
+  clauses,
+  selectedClause,
+  fontSize,
+  clauseRefs,
+}: {
+  clauses: Clause[];
+  selectedClause: string;
+  fontSize: number;
+  clauseRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
+}) {
+  return (
+    <div className="space-y-4">
+      {clauses.map((clause) => (
+        <div
+          key={clause.id}
+          ref={(el) => { clauseRefs.current[clause.id] = el; }}
+          className={`p-4 rounded-lg border transition-all duration-300 ${
+            selectedClause === clause.id
+              ? "bg-yellow-200/60 dark:bg-yellow-500/20 border-yellow-400 dark:border-yellow-500/40 ring-1 ring-yellow-400/50"
+              : "border-transparent hover:bg-muted/30"
+          }`}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="outline" className={`text-[10px] ${clauseTypeColors[clause.type] || ""}`}>
+              {clause.type}
+            </Badge>
+            <span className="font-mono-id text-muted-foreground text-xs">{clause.id}</span>
+          </div>
+          <p style={{ fontSize: `${fontSize}px`, lineHeight: 1.7 }} className="text-foreground">
+            {clause.text}
+          </p>
+          <div className="mt-3">
+            <EntityBadges clause={clause} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ─── Main Component ────────────────────────────────────── */
 export default function DocumentReader() {
   const { contractId } = useParams<{ contractId: string }>();
@@ -84,17 +193,21 @@ export default function DocumentReader() {
   const contract = getContract(contractId || "CTR-001");
   const clauses = getContractClauses(contractId || "CTR-001");
   const family = contract ? getFamily(contract.familyId) : undefined;
+  const documentText = getDocumentText(contractId || "CTR-001");
 
   const [selectedClause, setSelectedClause] = useState<string>("");
   const [fontSize, setFontSize] = useState(14);
-  const clauseRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const clauseRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const scrollToClause = useCallback((clauseId: string) => {
     setSelectedClause(clauseId);
-    const el = clauseRefs.current[clauseId];
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    // Delay to allow re-render with highlight before scrolling
+    setTimeout(() => {
+      const el = clauseRefs.current[clauseId];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 50);
   }, []);
 
   if (!contract) {
@@ -124,7 +237,6 @@ export default function DocumentReader() {
           <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
             <Flag className="h-3 w-3" /> Flag
           </Button>
-          {/* Font size controls */}
           <Separator orientation="vertical" className="h-5 mx-1" />
           <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setFontSize(Math.max(10, fontSize - 1))}>
             <Minus className="h-3 w-3" />
@@ -138,35 +250,26 @@ export default function DocumentReader() {
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* LEFT — Full Document */}
+        {/* LEFT — Full Digitized Contract */}
         <div className="flex-1 overflow-hidden">
           <ScrollArea className="h-full">
-            <div className="p-6 max-w-3xl mx-auto space-y-4">
-              {clauses.map((clause) => (
-                <div
-                  key={clause.id}
-                  ref={(el) => { clauseRefs.current[clause.id] = el; }}
-                  className={`p-4 rounded-lg border transition-all duration-200 ${
-                    selectedClause === clause.id
-                      ? "border-primary/40 bg-primary/[0.04] ring-1 ring-primary/20"
-                      : "border-transparent hover:bg-muted/30"
-                  }`}
-                  onClick={() => setSelectedClause(clause.id)}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="outline" className={`text-[10px] ${clauseTypeColors[clause.type] || ""}`}>
-                      {clause.type}
-                    </Badge>
-                    <span className="font-mono-id text-muted-foreground text-xs">{clause.id}</span>
-                  </div>
-                  <p style={{ fontSize: `${fontSize}px`, lineHeight: 1.7 }} className="text-foreground">
-                    {clause.text}
-                  </p>
-                  <div className="mt-3">
-                    <EntityBadges clause={clause} />
-                  </div>
-                </div>
-              ))}
+            <div className="p-6 max-w-3xl mx-auto">
+              {documentText ? (
+                <DigitizedDocument
+                  documentText={documentText}
+                  clauses={clauses}
+                  selectedClause={selectedClause}
+                  fontSize={fontSize}
+                  clauseRefs={clauseRefs as any}
+                />
+              ) : (
+                <ClauseBasedDocument
+                  clauses={clauses}
+                  selectedClause={selectedClause}
+                  fontSize={fontSize}
+                  clauseRefs={clauseRefs as any}
+                />
+              )}
             </div>
           </ScrollArea>
         </div>
@@ -255,7 +358,7 @@ export default function DocumentReader() {
                     key={clause.id}
                     className={`p-2.5 rounded-md cursor-pointer transition-colors ${
                       selectedClause === clause.id
-                        ? "bg-primary/5 border border-primary/20"
+                        ? "bg-yellow-100 dark:bg-yellow-500/10 border border-yellow-300 dark:border-yellow-500/30"
                         : "hover:bg-muted/50 border border-transparent"
                     }`}
                     onClick={() => scrollToClause(clause.id)}
