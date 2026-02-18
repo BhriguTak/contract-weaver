@@ -467,6 +467,193 @@ export const clausesCTR004: Clause[] = [
 // ─── Full Document Text ──────────────────────────────────────────────────────
 
 export const documentTexts: Record<string, string> = {
+  "CTR-001": `MASTER SERVICES AGREEMENT
+
+Effective Date: January 15, 2023
+Termination Date: January 15, 2026
+
+This Master Services Agreement ("Agreement") is entered into as of the Effective Date by and between Acme Corp, a Delaware corporation with its principal place of business at 100 Innovation Drive, Wilmington, DE 19801 ("Client"), and TechVentures Inc., a Delaware corporation with its principal place of business at 250 Technology Park, Wilmington, DE 19802 ("Service Provider").
+
+RECITALS
+
+WHEREAS, Client desires to engage Service Provider to provide certain technology consulting, development, and managed services; and
+
+WHEREAS, Service Provider possesses the expertise, personnel, and resources necessary to perform such services;
+
+NOW, THEREFORE, in consideration of the mutual covenants and agreements set forth herein, and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the parties agree as follows:
+
+1. DEFINITIONS
+
+1.1 "Confidential Information" means any non-public information disclosed by one party to the other, whether orally, in writing, or by inspection of tangible objects, that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and circumstances of disclosure.
+
+1.2 "Deliverables" means the tangible and intangible materials, including software, documentation, reports, and other work product, to be delivered by Service Provider under a Statement of Work.
+
+1.3 "Services" means the professional services described in any Statement of Work executed under this Agreement.
+
+1.4 "Statement of Work" or "SOW" means a written document executed by both parties that describes the specific Services to be performed, Deliverables, timeline, and fees.
+
+2. SERVICES AND STATEMENTS OF WORK
+
+2.1 Service Provider shall perform the Services described in each SOW in a professional and workmanlike manner consistent with generally accepted industry standards.
+
+2.2 Each SOW shall reference this Agreement and shall be subject to the terms and conditions herein. In the event of a conflict between this Agreement and any SOW, the terms of this Agreement shall prevail unless the SOW expressly states otherwise.
+
+2.3 Service Provider shall assign qualified personnel to perform the Services and shall not replace key personnel without prior written notice to Client.
+
+3. TERM AND RENEWAL
+
+3.1 This Agreement shall commence on the Effective Date and continue for an initial term of three (3) years, unless earlier terminated in accordance with Section 8.
+
+3.2 This Agreement shall automatically renew for successive one (1) year periods unless either party provides written notice of non-renewal at least ninety (90) days prior to the end of the then-current term.
+
+4. FEES AND EXPENSES
+
+4.1 Client shall pay Service Provider the fees set forth in each applicable SOW. Unless otherwise specified in a SOW, all fees are stated in United States Dollars.
+
+4.2 Service Provider shall be entitled to reimbursement for reasonable, pre-approved out-of-pocket expenses incurred in connection with the Services, provided that any single expense exceeding $500 requires prior written approval from Client.
+
+5. PAYMENT TERMS
+
+${clauseText("CTR-001", "CL-001-02")}
+
+6. REPRESENTATIONS AND WARRANTIES
+
+6.1 Each party represents and warrants that: (a) it has the authority to enter into this Agreement; (b) its performance will not violate any applicable law or regulation; and (c) it will comply with all applicable laws in the performance of its obligations hereunder.
+
+6.2 Service Provider represents and warrants that the Services will be performed in accordance with the specifications set forth in the applicable SOW and in compliance with all applicable professional standards.
+
+7. CONFIDENTIALITY
+
+${clauseText("CTR-001", "CL-001-04")}
+
+7.2 The obligations of confidentiality shall survive termination of this Agreement for a period of five (5) years, except with respect to trade secrets, which shall be protected indefinitely.
+
+8. TERMINATION
+
+${clauseText("CTR-001", "CL-001-01")}
+
+8.2 Upon termination, Service Provider shall promptly return or destroy all Confidential Information of Client and shall provide a certification of such return or destruction within thirty (30) days.
+
+9. LIMITATION OF LIABILITY
+
+${clauseText("CTR-001", "CL-001-03")}
+
+10. INDEMNIFICATION
+
+${clauseText("CTR-001", "CL-001-05")}
+
+11. FORCE MAJEURE
+
+${clauseText("CTR-001", "CL-001-07")}
+
+12. INTELLECTUAL PROPERTY
+
+${clauseText("CTR-001", "CL-001-08")}
+
+13. DISPUTE RESOLUTION
+
+13.1 The parties shall attempt to resolve any dispute arising out of or relating to this Agreement through good faith negotiation. If the dispute cannot be resolved through negotiation within thirty (30) days, either party may pursue the remedies available under Section 14.
+
+14. GOVERNING LAW AND JURISDICTION
+
+${clauseText("CTR-001", "CL-001-06")}
+
+15. INSURANCE
+
+15.1 Service Provider shall maintain, at its own expense, commercial general liability insurance with coverage of at least $2,000,000 per occurrence and $5,000,000 in the aggregate, and professional liability insurance of at least $1,000,000 per claim, throughout the term of this Agreement.
+
+16. NOTICES
+
+16.1 All notices under this Agreement shall be in writing and delivered by certified mail, overnight courier, or email (with confirmation of receipt) to the addresses set forth on the signature page or to such other address as a party may designate in writing.
+
+17. GENERAL PROVISIONS
+
+17.1 Entire Agreement. This Agreement, together with all SOWs and exhibits, constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior agreements, negotiations, and discussions.
+
+17.2 Amendment. This Agreement may only be amended by a written instrument signed by authorized representatives of both parties.
+
+17.3 Waiver. The failure of either party to enforce any provision of this Agreement shall not constitute a waiver of such provision or the right to enforce it at a later time.
+
+17.4 Severability. If any provision of this Agreement is held to be invalid or unenforceable, the remaining provisions shall continue in full force and effect.
+
+17.5 Assignment. Neither party may assign this Agreement without the prior written consent of the other party, except in connection with a merger, acquisition, or sale of substantially all of its assets.
+
+IN WITNESS WHEREOF, the parties have executed this Master Services Agreement as of the Effective Date.
+
+ACME CORP                           TECHVENTURES INC.
+By: Jane Mitchell                   By: Thomas Reed
+Title: VP Legal                     Title: CEO
+Date: January 10, 2023             Date: January 12, 2023`,
+
+  "CTR-002": `AMENDMENT NO. 1 TO MASTER SERVICES AGREEMENT
+
+Effective Date: September 1, 2023
+
+This Amendment No. 1 ("Amendment") is entered into as of the Effective Date by and between Acme Corp, a Delaware corporation ("Client"), and TechVentures Inc., a Delaware corporation ("Service Provider"), and amends that certain Master Services Agreement dated January 15, 2023 (the "Agreement").
+
+RECITALS
+
+WHEREAS, the parties entered into the Agreement for the provision of technology consulting and managed services; and
+
+WHEREAS, the parties desire to amend certain terms of the Agreement to reflect updated commercial terms, enhanced data protection requirements, and additional insurance obligations;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
+
+1. AMENDMENTS TO SECTION 5 — PAYMENT TERMS
+
+Section 5 of the Agreement is hereby deleted in its entirety and replaced with the following:
+
+${clauseText("CTR-002", "CL-002-02")}
+
+2. AMENDMENTS TO SECTION 8 — TERMINATION
+
+Section 8.1 of the Agreement is hereby deleted in its entirety and replaced with the following:
+
+${clauseText("CTR-002", "CL-002-01")}
+
+3. AMENDMENTS TO SECTION 9 — LIMITATION OF LIABILITY
+
+Section 9 of the Agreement is hereby deleted in its entirety and replaced with the following:
+
+${clauseText("CTR-002", "CL-002-03")}
+
+4. NEW SECTION 14A — DATA PROTECTION
+
+The following new section is added to the Agreement immediately following Section 14:
+
+${clauseText("CTR-002", "CL-002-04")}
+
+5. NEW SECTION 15A — INSURANCE REQUIREMENTS
+
+The following new section is added to the Agreement immediately following Section 15:
+
+${clauseText("CTR-002", "CL-002-05")}
+
+6. AMENDMENTS TO SECTION 12 — INTELLECTUAL PROPERTY
+
+Section 12.1 of the Agreement is hereby deleted in its entirety and replaced with the following:
+
+${clauseText("CTR-002", "CL-002-06")}
+
+7. RATIFICATION
+
+Except as expressly amended by this Amendment, all terms and conditions of the Agreement remain in full force and effect and are hereby ratified and confirmed. In the event of any conflict between this Amendment and the Agreement, the terms of this Amendment shall prevail.
+
+8. COUNTERPARTS
+
+This Amendment may be executed in counterparts, each of which shall be deemed an original, and all of which together shall constitute one and the same instrument.
+
+9. ENTIRE AMENDMENT
+
+This Amendment, together with the Agreement, constitutes the entire understanding between the parties with respect to the subject matter hereof. No modification of this Amendment shall be effective unless in writing and signed by both parties.
+
+IN WITNESS WHEREOF, the parties have executed this Amendment No. 1 as of the Effective Date.
+
+ACME CORP                           TECHVENTURES INC.
+By: Jane Mitchell                   By: Thomas Reed
+Title: VP Legal                     Title: CEO
+Date: August 25, 2023              Date: August 28, 2023`,
+
   "CTR-004": `STATEMENT OF WORK #1 — CLOUD MIGRATION
 
 Effective Date: April 1, 2023
