@@ -6,6 +6,8 @@ import {
   GitCompareArrows,
   Search,
   Settings,
+  ClipboardCheck,
+  Sparkles,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -26,12 +28,14 @@ const mainNav = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Upload", url: "/upload", icon: Upload },
   { title: "Families", url: "/families", icon: FolderTree },
+  { title: "Obligations", url: "/obligations", icon: ClipboardCheck },
   { title: "Search", url: "/search", icon: Search },
 ];
 
 const toolsNav = [
   { title: "Document Reader", url: "/reader", icon: FileText },
   { title: "Compare", url: "/compare", icon: GitCompareArrows },
+  { title: "Contract Agent", url: "/agent", icon: Sparkles },
 ];
 
 export function AppSidebar() {
@@ -51,7 +55,7 @@ export function AppSidebar() {
                 ContractIQ
               </span>
               <span className="text-[10px] text-sidebar-foreground/60 truncate">
-                Intelligence Platform
+                Healthcare CLM Platform
               </span>
             </div>
           )}

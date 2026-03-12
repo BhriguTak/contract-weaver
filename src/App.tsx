@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import Families from "./pages/Families";
 import DocumentReader from "./pages/DocumentReader";
 import Compare from "./pages/Compare";
+import Obligations from "./pages/Obligations";
+import ContractAgent from "./pages/ContractAgent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/reader/:contractId" element={<DocumentReader />} />
             <Route path="/reader" element={<DocumentReader />} />
             <Route path="/compare" element={<Compare />} />
+            <Route path="/obligations" element={<Obligations />} />
+            <Route path="/agent" element={<ContractAgent />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
