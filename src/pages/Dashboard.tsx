@@ -12,15 +12,20 @@ import {
   XCircle,
   MessageSquare,
   GitCompareArrows,
+  Shield,
+  ClipboardCheck,
+  Heart,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import {
   kpiData,
   families,
   activityFeed,
+  obligations,
   type ActivityItem,
   type ContractFamily,
 } from "@/data/mock-data";
@@ -46,16 +51,18 @@ function KPICard({
   icon: Icon,
   trend,
   onClick,
+  alert,
 }: {
   title: string;
   value: number;
   icon: React.ElementType;
   trend?: string;
   onClick?: () => void;
+  alert?: boolean;
 }) {
   return (
     <Card
-      className="cursor-pointer transition-all hover:shadow-md hover:border-primary/30"
+      className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/30 ${alert ? "border-destructive/30" : ""}`}
       onClick={onClick}
     >
       <CardContent className="p-5">
@@ -70,8 +77,8 @@ function KPICard({
               </p>
             )}
           </div>
-          <div className="rounded-lg bg-primary/10 p-2.5">
-            <Icon className="h-5 w-5 text-primary" />
+          <div className={`rounded-lg p-2.5 ${alert ? "bg-destructive/10" : "bg-primary/10"}`}>
+            <Icon className={`h-5 w-5 ${alert ? "text-destructive" : "text-primary"}`} />
           </div>
         </div>
       </CardContent>
@@ -154,6 +161,76 @@ function FamilyCard({ family }: { family: ContractFamily }) {
   );
 }
 
+/* ─── Obligation Alert Widget ───────────────────────── */
+function ObligationAlerts() {
+  const navigate = useNavigate();
+  const urgent = obligations
+    .filter(o => o.status === "overdue" || o.status === "at_risk")
+    .sort((a, b) => {
+      const order: Record<string, number> = { overdue: 0, at_risk: 1 };
+      return (order[a.status] ?? 2) - (order[b.status] ?? 2);
+    })
+    .slice(0, 5);
+
+  const total = obligations.length;
+  const compliant = obligations.filter(o => o.status === "compliant" || o.status === "completed").length;
+  const score = Math.round((compliant / total) * 100);
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Shield className="h-4 w-4 text-primary" />
+            Compliance Overview
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs gap-1"
+            onClick={() => navigate("/obligations")}
+          >
+            View all <ArrowRight className="h-3 w-3" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Score bar */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Overall Compliance</span>
+            <span className={`font-semibold ${score >= 70 ? "text-confidence-high" : score >= 50 ? "text-confidence-medium" : "text-destructive"}`}>
+              {score}%
+            </span>
+          </div>
+          <Progress value={score} className="h-2" />
+        </div>
+
+        {/* Urgent items */}
+        <div className="space-y-2">
+          {urgent.map(obl => (
+            <div
+              key={obl.id}
+              className="flex items-start gap-2 p-2 rounded-md hover:bg-muted/30 cursor-pointer"
+              onClick={() => navigate("/obligations")}
+            >
+              {obl.status === "overdue" ? (
+                <XCircle className="h-3.5 w-3.5 text-destructive shrink-0 mt-0.5" />
+              ) : (
+                <AlertTriangle className="h-3.5 w-3.5 text-confidence-medium shrink-0 mt-0.5" />
+              )}
+              <div className="min-w-0">
+                <p className="text-xs font-medium truncate">{obl.title}</p>
+                <p className="text-[10px] text-muted-foreground">{obl.owner}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function getTimeAgo(timestamp: string): string {
   const now = new Date("2026-02-16T12:00:00Z");
   const then = new Date(timestamp);
@@ -168,10 +245,11 @@ function getTimeAgo(timestamp: string): string {
 }
 
 const quickFilters = [
-  "All MSAs with pending amendments",
-  "Failed extractions",
+  "BAAs needing renewal",
+  "HIPAA compliance gaps",
   "Expiring within 90 days",
   "Low confidence clauses",
+  "Overdue obligations",
 ];
 
 export default function Dashboard() {
@@ -182,9 +260,12 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Heart className="h-6 w-6 text-primary" />
+            Healthcare Contract Dashboard
+          </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Contract intelligence overview
+            Contract intelligence for healthcare provider agreements
           </p>
         </div>
         <Button onClick={() => navigate("/upload")} className="gap-2">
@@ -194,7 +275,7 @@ export default function Dashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <KPICard
           title="Total Contracts"
           value={kpiData.totalContracts}
@@ -202,19 +283,28 @@ export default function Dashboard() {
           trend="+3 this month"
         />
         <KPICard
-          title="Contract Families"
+          title="Provider Families"
           value={kpiData.totalFamilies}
           icon={FolderTree}
         />
         <KPICard
-          title="Pending Reviews"
-          value={kpiData.pendingReviews}
-          icon={AlertTriangle}
+          title="HIPAA Contracts"
+          value={kpiData.hipaaContracts}
+          icon={Shield}
         />
         <KPICard
-          title="Processing Errors"
-          value={kpiData.processingErrors}
-          icon={XCircle}
+          title="Overdue Obligations"
+          value={kpiData.overdueObligations}
+          icon={ClipboardCheck}
+          alert={kpiData.overdueObligations > 0}
+          onClick={() => navigate("/obligations")}
+        />
+        <KPICard
+          title="At Risk"
+          value={kpiData.atRiskObligations}
+          icon={AlertTriangle}
+          alert={kpiData.atRiskObligations > 0}
+          onClick={() => navigate("/obligations")}
         />
       </div>
 
@@ -232,26 +322,29 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Main Content: Activity + Families */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Recent Activity */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <ScrollArea className="h-[400px] pr-3">
-              {activityFeed.map((item) => (
-                <ActivityRow key={item.id} item={item} />
-              ))}
-            </ScrollArea>
-          </CardContent>
-        </Card>
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Compliance + Activity */}
+        <div className="lg:col-span-4 space-y-6">
+          <ObligationAlerts />
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <ScrollArea className="h-[300px] pr-3">
+                {activityFeed.map((item) => (
+                  <ActivityRow key={item.id} item={item} />
+                ))}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Contract Families */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold">Contract Families</h2>
+            <h2 className="text-base font-semibold">Healthcare Provider Families</h2>
             <Button
               variant="ghost"
               size="sm"
