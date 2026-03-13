@@ -29,12 +29,10 @@ const mainNav = [
   { title: "Upload", url: "/upload", icon: Upload },
   { title: "Families", url: "/families", icon: FolderTree },
   { title: "Obligations", url: "/obligations", icon: ClipboardCheck },
-  { title: "Search", url: "/search", icon: Search },
+  { title: "Digitization", url: "/digitization", icon: FileText },
 ];
 
 const toolsNav = [
-  { title: "Document Reader", url: "/reader", icon: FileText },
-  { title: "Compare", url: "/compare", icon: GitCompareArrows },
   { title: "Contract Agent", url: "/agent", icon: Sparkles },
 ];
 
