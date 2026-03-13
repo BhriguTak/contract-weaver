@@ -4,12 +4,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
+import { FloatingAgent } from "./components/FloatingAgent";
 import Dashboard from "./pages/Dashboard";
 import Families from "./pages/Families";
 import DocumentReader from "./pages/DocumentReader";
 import Compare from "./pages/Compare";
 import Obligations from "./pages/Obligations";
 import ContractAgent from "./pages/ContractAgent";
+import Digitization from "./pages/Digitization";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,9 +32,11 @@ const App = () => (
             <Route path="/compare" element={<Compare />} />
             <Route path="/obligations" element={<Obligations />} />
             <Route path="/agent" element={<ContractAgent />} />
+            <Route path="/digitization" element={<Digitization />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <FloatingAgent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

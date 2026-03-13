@@ -7,6 +7,7 @@ import {
   Upload,
   ArrowRight,
   TrendingUp,
+  TrendingDown,
   Activity,
   CheckCircle2,
   XCircle,
@@ -15,6 +16,14 @@ import {
   Shield,
   ClipboardCheck,
   Heart,
+  DollarSign,
+  Stethoscope,
+  Building2,
+  ScanLine,
+  BarChart3,
+  Users,
+  Percent,
+  CreditCard,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,13 +39,51 @@ import {
   type ContractFamily,
 } from "@/data/mock-data";
 
+/* ─── Payer-Specific KPI Data ─────────────────────── */
+const payerKpis = {
+  totalPayerContracts: 14,
+  activePayers: 6,
+  cleanClaimRate: 94.2,
+  cleanClaimTarget: 95,
+  avgDaysToPayment: 32,
+  denialRate: 8.3,
+  denialRatePrev: 6.1,
+  credentialingPending: 3,
+  totalContractValue: 4_800_000,
+  baaCompliance: 87,
+  networkAdequacy: 92,
+  priorAuthApproval: 78,
+  arOver90Days: 245_000,
+  reimbursementVariance: -3.2,
+};
+
+const payerBreakdown = [
+  { name: "BlueCross BlueShield", contracts: 4, status: "active" as const, claimRate: 96.1, denials: 5.2, value: "$1.8M", renewal: "Jun 2026" },
+  { name: "Aetna", contracts: 3, status: "active" as const, claimRate: 93.4, denials: 9.1, value: "$920K", renewal: "Sep 2026" },
+  { name: "UnitedHealth Group", contracts: 3, status: "active" as const, claimRate: 91.8, denials: 11.2, value: "$1.2M", renewal: "Mar 2027" },
+  { name: "Cigna", contracts: 2, status: "review" as const, claimRate: 94.7, denials: 7.3, value: "$480K", renewal: "Dec 2026" },
+  { name: "Humana", contracts: 1, status: "active" as const, claimRate: 97.2, denials: 4.1, value: "$280K", renewal: "Jan 2027" },
+  { name: "TRICARE", contracts: 1, status: "expired" as const, claimRate: 88.5, denials: 14.8, value: "$120K", renewal: "Expired" },
+];
+
+const topDenialReasons = [
+  { reason: "Missing prior authorization", pct: 34, trend: "up" },
+  { reason: "ICD-10 coding specificity", pct: 22, trend: "stable" },
+  { reason: "Timely filing violation", pct: 18, trend: "down" },
+  { reason: "Non-covered service", pct: 14, trend: "up" },
+  { reason: "Duplicate claim", pct: 12, trend: "stable" },
+];
+
+/* ─── Status Colors ───────────────────────────────── */
 const statusColors: Record<string, string> = {
   active: "bg-confidence-high/10 text-confidence-high border-confidence-high/20",
   expired: "bg-muted text-muted-foreground border-border",
   pending_review: "bg-confidence-medium/10 text-confidence-medium border-confidence-medium/20",
+  review: "bg-confidence-medium/10 text-confidence-medium border-confidence-medium/20",
   draft: "bg-status-info/10 text-status-info border-status-info/20",
 };
 
+/* ─── Activity Icons ──────────────────────────────── */
 const activityIcons: Record<string, React.ElementType> = {
   upload: Upload,
   extraction: Activity,
@@ -45,40 +92,50 @@ const activityIcons: Record<string, React.ElementType> = {
   comment: MessageSquare,
 };
 
-function KPICard({
+/* ─── Components ──────────────────────────────────── */
+function MetricCard({
   title,
   value,
   icon: Icon,
   trend,
-  onClick,
+  trendDirection,
+  subtitle,
   alert,
+  onClick,
 }: {
   title: string;
-  value: number;
+  value: string | number;
   icon: React.ElementType;
   trend?: string;
-  onClick?: () => void;
+  trendDirection?: "up" | "down" | "stable";
+  subtitle?: string;
   alert?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <Card
       className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/30 ${alert ? "border-destructive/30" : ""}`}
       onClick={onClick}
     >
-      <CardContent className="p-5">
+      <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
+            <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
             {trend && (
-              <p className="mt-1 flex items-center gap-1 text-xs text-confidence-high">
-                <TrendingUp className="h-3 w-3" />
+              <p className={`mt-0.5 flex items-center gap-1 text-[11px] ${
+                trendDirection === "up" ? "text-confidence-high" :
+                trendDirection === "down" ? "text-destructive" : "text-muted-foreground"
+              }`}>
+                {trendDirection === "up" ? <TrendingUp className="h-3 w-3" /> :
+                 trendDirection === "down" ? <TrendingDown className="h-3 w-3" /> : null}
                 {trend}
               </p>
             )}
+            {subtitle && <p className="text-[10px] text-muted-foreground mt-0.5">{subtitle}</p>}
           </div>
-          <div className={`rounded-lg p-2.5 ${alert ? "bg-destructive/10" : "bg-primary/10"}`}>
-            <Icon className={`h-5 w-5 ${alert ? "text-destructive" : "text-primary"}`} />
+          <div className={`rounded-lg p-2 ${alert ? "bg-destructive/10" : "bg-primary/10"}`}>
+            <Icon className={`h-4 w-4 ${alert ? "text-destructive" : "text-primary"}`} />
           </div>
         </div>
       </CardContent>
@@ -88,81 +145,110 @@ function KPICard({
 
 function ActivityRow({ item }: { item: ActivityItem }) {
   const Icon = activityIcons[item.type] || Activity;
-  const timeAgo = getTimeAgo(item.timestamp);
-
   return (
-    <div className="flex gap-3 py-3 border-b last:border-0">
+    <div className="flex gap-3 py-2.5 border-b last:border-0">
       <div className="mt-0.5 rounded-md bg-muted p-1.5 h-fit">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+        <Icon className="h-3 w-3 text-muted-foreground" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium leading-tight">{item.title}</p>
-        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-          {item.description}
-        </p>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[11px] text-muted-foreground">{timeAgo}</span>
-          <span className="text-[11px] text-muted-foreground">·</span>
-          <span className="text-[11px] text-muted-foreground">{item.user}</span>
-        </div>
+        <p className="text-xs font-medium leading-tight">{item.title}</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>
+        <span className="text-[10px] text-muted-foreground">{item.user}</span>
       </div>
     </div>
   );
 }
 
-function FamilyCard({ family }: { family: ContractFamily }) {
+function PayerTable() {
   const navigate = useNavigate();
-
   return (
-    <Card
-      className="cursor-pointer transition-all hover:shadow-md hover:border-primary/30"
-      onClick={() => navigate(`/families/${family.id}`)}
-    >
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <h3 className="text-sm font-semibold truncate">{family.name}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {family.jurisdiction} · {family.dateRange}
-            </p>
-          </div>
-          <Badge
-            variant="outline"
-            className={`shrink-0 text-[10px] ${statusColors[family.status] || ""}`}
-          >
-            {family.status.replace("_", " ")}
-          </Badge>
+    <Card>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-primary" />
+            Payer Performance
+          </CardTitle>
+          <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => navigate("/families")}>
+            View all <ArrowRight className="h-3 w-3" />
+          </Button>
         </div>
-
-        <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <FileText className="h-3 w-3" />
-            {family.documentCount} docs
-          </span>
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {getTimeAgo(family.lastActivity)}
-          </span>
-        </div>
-
-        <div className="mt-2.5 flex flex-wrap gap-1">
-          {family.tags.map((tag) => (
-            <Badge
-              key={tag}
-              variant="secondary"
-              className="text-[10px] px-1.5 py-0 h-5 font-normal"
-            >
-              {tag}
-            </Badge>
-          ))}
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-3 font-medium text-muted-foreground">Payer</th>
+                <th className="text-center p-3 font-medium text-muted-foreground">Contracts</th>
+                <th className="text-center p-3 font-medium text-muted-foreground">Clean Claim %</th>
+                <th className="text-center p-3 font-medium text-muted-foreground">Denial %</th>
+                <th className="text-center p-3 font-medium text-muted-foreground">Value</th>
+                <th className="text-center p-3 font-medium text-muted-foreground">Renewal</th>
+                <th className="text-center p-3 font-medium text-muted-foreground">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payerBreakdown.map(payer => (
+                <tr key={payer.name} className="border-b last:border-0 hover:bg-muted/30 cursor-pointer">
+                  <td className="p-3 font-medium">{payer.name}</td>
+                  <td className="p-3 text-center">{payer.contracts}</td>
+                  <td className="p-3 text-center">
+                    <span className={payer.claimRate >= 95 ? "text-confidence-high" : payer.claimRate >= 90 ? "text-confidence-medium" : "text-destructive"}>
+                      {payer.claimRate}%
+                    </span>
+                  </td>
+                  <td className="p-3 text-center">
+                    <span className={payer.denials <= 6 ? "text-confidence-high" : payer.denials <= 10 ? "text-confidence-medium" : "text-destructive"}>
+                      {payer.denials}%
+                    </span>
+                  </td>
+                  <td className="p-3 text-center font-medium">{payer.value}</td>
+                  <td className="p-3 text-center text-muted-foreground">{payer.renewal}</td>
+                  <td className="p-3 text-center">
+                    <Badge variant="outline" className={`text-[10px] ${statusColors[payer.status] || ""}`}>
+                      {payer.status}
+                    </Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-/* ─── Obligation Alert Widget ───────────────────────── */
-function ObligationAlerts() {
+function DenialInsights() {
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          <XCircle className="h-4 w-4 text-destructive" />
+          Top Denial Reasons
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {topDenialReasons.map(d => (
+          <div key={d.reason} className="space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="truncate">{d.reason}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold">{d.pct}%</span>
+                {d.trend === "up" && <TrendingUp className="h-3 w-3 text-destructive" />}
+                {d.trend === "down" && <TrendingDown className="h-3 w-3 text-confidence-high" />}
+              </div>
+            </div>
+            <Progress value={d.pct} className="h-1.5" />
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ComplianceWidget() {
   const navigate = useNavigate();
   const urgent = obligations
     .filter(o => o.status === "overdue" || o.status === "at_risk")
@@ -170,7 +256,7 @@ function ObligationAlerts() {
       const order: Record<string, number> = { overdue: 0, at_risk: 1 };
       return (order[a.status] ?? 2) - (order[b.status] ?? 2);
     })
-    .slice(0, 5);
+    .slice(0, 4);
 
   const total = obligations.length;
   const compliant = obligations.filter(o => o.status === "compliant" || o.status === "completed").length;
@@ -182,20 +268,14 @@ function ObligationAlerts() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
-            Compliance Overview
+            Compliance & Obligations
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs gap-1"
-            onClick={() => navigate("/obligations")}
-          >
+          <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => navigate("/obligations")}>
             View all <ArrowRight className="h-3 w-3" />
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Score bar */}
+      <CardContent className="space-y-3">
         <div className="space-y-1">
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">Overall Compliance</span>
@@ -205,9 +285,7 @@ function ObligationAlerts() {
           </div>
           <Progress value={score} className="h-2" />
         </div>
-
-        {/* Urgent items */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {urgent.map(obl => (
             <div
               key={obl.id}
@@ -220,7 +298,7 @@ function ObligationAlerts() {
                 <AlertTriangle className="h-3.5 w-3.5 text-confidence-medium shrink-0 mt-0.5" />
               )}
               <div className="min-w-0">
-                <p className="text-xs font-medium truncate">{obl.title}</p>
+                <p className="text-[11px] font-medium truncate">{obl.title}</p>
                 <p className="text-[10px] text-muted-foreground">{obl.owner}</p>
               </div>
             </div>
@@ -231,109 +309,121 @@ function ObligationAlerts() {
   );
 }
 
-function getTimeAgo(timestamp: string): string {
-  const now = new Date("2026-02-16T12:00:00Z");
-  const then = new Date(timestamp);
-  const diffMs = now.getTime() - then.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
-  return `${Math.floor(diffDays / 365)}y ago`;
-}
-
-const quickFilters = [
-  "BAAs needing renewal",
-  "HIPAA compliance gaps",
-  "Expiring within 90 days",
-  "Low confidence clauses",
-  "Overdue obligations",
-];
-
+/* ─── Main Dashboard ──────────────────────────────── */
 export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-6 space-y-5 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Heart className="h-6 w-6 text-primary" />
-            Healthcare Contract Dashboard
+            <Stethoscope className="h-6 w-6 text-primary" />
+            Payer Contract Intelligence
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Contract intelligence for healthcare provider agreements
+            Real-time analytics across payer agreements, claims performance & compliance
           </p>
         </div>
-        <Button onClick={() => navigate("/upload")} className="gap-2">
-          <Upload className="h-4 w-4" />
-          Upload Contracts
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate("/digitization")} className="gap-2 text-xs">
+            <ScanLine className="h-4 w-4" />
+            Digitize Legacy
+          </Button>
+          <Button onClick={() => navigate("/upload")} className="gap-2">
+            <Upload className="h-4 w-4" />
+            Upload Contracts
+          </Button>
+        </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <KPICard
-          title="Total Contracts"
-          value={kpiData.totalContracts}
-          icon={FileText}
-          trend="+3 this month"
+      {/* Primary KPIs — Payer Specific */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <MetricCard
+          title="Active Payers"
+          value={payerKpis.activePayers}
+          icon={Building2}
+          subtitle={`${payerKpis.totalPayerContracts} total contracts`}
         />
-        <KPICard
-          title="Provider Families"
-          value={kpiData.totalFamilies}
-          icon={FolderTree}
+        <MetricCard
+          title="Clean Claim Rate"
+          value={`${payerKpis.cleanClaimRate}%`}
+          icon={CheckCircle2}
+          trend={`Target: ${payerKpis.cleanClaimTarget}%`}
+          trendDirection={payerKpis.cleanClaimRate >= payerKpis.cleanClaimTarget ? "up" : "down"}
         />
-        <KPICard
-          title="HIPAA Contracts"
-          value={kpiData.hipaaContracts}
+        <MetricCard
+          title="Denial Rate"
+          value={`${payerKpis.denialRate}%`}
+          icon={XCircle}
+          trend={`Was ${payerKpis.denialRatePrev}% last quarter`}
+          trendDirection="down"
+          alert
+        />
+        <MetricCard
+          title="Avg Days to Pay"
+          value={payerKpis.avgDaysToPayment}
+          icon={Clock}
+          subtitle="Industry avg: 45 days"
+          trendDirection="up"
+        />
+        <MetricCard
+          title="Prior Auth Approval"
+          value={`${payerKpis.priorAuthApproval}%`}
+          icon={ClipboardCheck}
+          alert={payerKpis.priorAuthApproval < 80}
+        />
+        <MetricCard
+          title="A/R > 90 Days"
+          value={`$${(payerKpis.arOver90Days / 1000).toFixed(0)}K`}
+          icon={DollarSign}
+          alert
+          onClick={() => navigate("/obligations")}
+        />
+      </div>
+
+      {/* Secondary KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <MetricCard
+          title="BAA Compliance"
+          value={`${payerKpis.baaCompliance}%`}
           icon={Shield}
+          onClick={() => navigate("/obligations")}
         />
-        <KPICard
+        <MetricCard
+          title="Network Adequacy"
+          value={`${payerKpis.networkAdequacy}%`}
+          icon={Users}
+        />
+        <MetricCard
           title="Overdue Obligations"
           value={kpiData.overdueObligations}
-          icon={ClipboardCheck}
+          icon={AlertTriangle}
           alert={kpiData.overdueObligations > 0}
           onClick={() => navigate("/obligations")}
         />
-        <KPICard
-          title="At Risk"
-          value={kpiData.atRiskObligations}
-          icon={AlertTriangle}
-          alert={kpiData.atRiskObligations > 0}
-          onClick={() => navigate("/obligations")}
+        <MetricCard
+          title="Credentialing Pending"
+          value={payerKpis.credentialingPending}
+          icon={Stethoscope}
+          subtitle="Providers awaiting approval"
         />
       </div>
 
-      {/* Quick Filters */}
-      <div className="flex flex-wrap gap-2">
-        {quickFilters.map((filter) => (
-          <Button
-            key={filter}
-            variant="outline"
-            size="sm"
-            className="text-xs h-7 rounded-full"
-          >
-            {filter}
-          </Button>
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Compliance + Activity */}
-        <div className="lg:col-span-4 space-y-6">
-          <ObligationAlerts />
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left Column */}
+        <div className="lg:col-span-4 space-y-5">
+          <ComplianceWidget />
+          <DenialInsights />
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <CardTitle className="text-base">Recent Activity</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <ScrollArea className="h-[300px] pr-3">
-                {activityFeed.map((item) => (
+              <ScrollArea className="h-[240px] pr-3">
+                {activityFeed.map(item => (
                   <ActivityRow key={item.id} item={item} />
                 ))}
               </ScrollArea>
@@ -341,22 +431,46 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Contract Families */}
-        <div className="lg:col-span-8 space-y-4">
+        {/* Right Column — Payer Table */}
+        <div className="lg:col-span-8 space-y-5">
+          <PayerTable />
+
+          {/* Provider Families Grid */}
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold">Healthcare Provider Families</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs gap-1"
-              onClick={() => navigate("/families")}
-            >
+            <h2 className="text-base font-semibold">Provider Families</h2>
+            <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => navigate("/families")}>
               View all <ArrowRight className="h-3 w-3" />
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {families.map((family) => (
-              <FamilyCard key={family.id} family={family} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {families.map(family => (
+              <Card
+                key={family.id}
+                className="cursor-pointer transition-all hover:shadow-md hover:border-primary/30"
+                onClick={() => navigate(`/families/${family.id}`)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-xs font-semibold truncate">{family.name}</h3>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {family.jurisdiction} · {family.dateRange}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className={`shrink-0 text-[10px] ${statusColors[family.status] || ""}`}>
+                      {family.status.replace("_", " ")}
+                    </Badge>
+                  </div>
+                  <div className="mt-2 flex items-center gap-3 text-[10px] text-muted-foreground">
+                    <span className="flex items-center gap-1"><FileText className="h-2.5 w-2.5" />{family.documentCount} docs</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {family.tags.slice(0, 3).map(tag => (
+                      <Badge key={tag} variant="secondary" className="text-[9px] px-1.5 py-0 h-4 font-normal">{tag}</Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
