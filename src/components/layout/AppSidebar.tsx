@@ -3,8 +3,6 @@ import {
   Upload,
   FolderTree,
   FileText,
-  GitCompareArrows,
-  Search,
   Settings,
   ClipboardCheck,
   Sparkles,
