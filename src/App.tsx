@@ -52,6 +52,7 @@ const App = () => (
             <Route path="/v2/obligations" element={<V2Obligations />} />
             <Route path="/v2/agent" element={<V2Agent />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <FloatingAgent />
       </BrowserRouter>
