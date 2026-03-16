@@ -13,6 +13,14 @@ import Obligations from "./pages/Obligations";
 import ContractAgent from "./pages/ContractAgent";
 import Digitization from "./pages/Digitization";
 import NotFound from "./pages/NotFound";
+import { V2Layout } from "./components/v2/V2Layout";
+import V2Dashboard from "./pages/v2/V2Dashboard";
+import V2Drafting from "./pages/v2/V2Drafting";
+import V2Contracts from "./pages/v2/V2Contracts";
+import V2Redline from "./pages/v2/V2Redline";
+import V2Upload from "./pages/v2/V2Upload";
+import V2Obligations from "./pages/v2/V2Obligations";
+import V2Agent from "./pages/v2/V2Agent";
 
 const queryClient = new QueryClient();
 
