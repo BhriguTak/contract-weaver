@@ -42,7 +42,16 @@ const App = () => (
             <Route path="/agent" element={<ContractAgent />} />
             <Route path="/digitization" element={<Digitization />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
+          {/* V2 Platform */}
+          <Route element={<V2Layout />}>
+            <Route path="/v2" element={<V2Dashboard />} />
+            <Route path="/v2/drafting" element={<V2Drafting />} />
+            <Route path="/v2/contracts" element={<V2Contracts />} />
+            <Route path="/v2/redline" element={<V2Redline />} />
+            <Route path="/v2/upload" element={<V2Upload />} />
+            <Route path="/v2/obligations" element={<V2Obligations />} />
+            <Route path="/v2/agent" element={<V2Agent />} />
+          </Route>
         </Routes>
         <FloatingAgent />
       </BrowserRouter>
