@@ -267,7 +267,7 @@ export default function Families() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Contract Families</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Contracts</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
           Browse and explore related contract groups
         </p>
