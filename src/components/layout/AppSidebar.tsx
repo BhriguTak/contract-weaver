@@ -25,7 +25,7 @@ import {
 const mainNav = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Upload", url: "/upload", icon: Upload },
-  { title: "Families", url: "/families", icon: FolderTree },
+  { title: "Contracts", url: "/families", icon: FolderTree },
   { title: "Obligations", url: "/obligations", icon: ClipboardCheck },
   { title: "Digitization", url: "/digitization", icon: FileText },
 ];
