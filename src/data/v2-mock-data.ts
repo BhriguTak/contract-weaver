@@ -5,6 +5,31 @@ export type ContractType = "payer_agreement" | "provider_network" | "baa" | "emp
 export type ObligationStatus = "compliant" | "at_risk" | "overdue" | "upcoming" | "completed";
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 export type RedlineStatus = "pending" | "accepted" | "rejected" | "counter";
+export type PipelineStage = "draft" | "internal_review" | "pricing" | "legal" | "approved" | "signed";
+
+export interface PipelineContract {
+  id: string;
+  title: string;
+  type: ContractType;
+  counterparty: string;
+  stage: PipelineStage;
+  owner: string;
+  value: number;
+  createdDate: string;
+  lastModified: string;
+  stageHistory: { stage: PipelineStage; date: string; by: string }[];
+  sharedWith: string[];
+  daysInStage: number;
+  priority: RiskLevel;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  department: string;
+  avatar?: string;
+}
 
 export interface V2Contract {
   id: string;
