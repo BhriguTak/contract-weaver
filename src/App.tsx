@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import { V2Layout } from "./components/v2/V2Layout";
 import V2Dashboard from "./pages/v2/V2Dashboard";
 import V2Drafting from "./pages/v2/V2Drafting";
+import V2Pipeline from "./pages/v2/V2Pipeline";
 import V2Contracts from "./pages/v2/V2Contracts";
 import V2Redline from "./pages/v2/V2Redline";
 import V2Upload from "./pages/v2/V2Upload";
@@ -45,6 +46,7 @@ const App = () => (
           {/* V2 Platform */}
           <Route element={<V2Layout />}>
             <Route path="/v2" element={<V2Dashboard />} />
+            <Route path="/v2/pipeline" element={<V2Pipeline />} />
             <Route path="/v2/drafting" element={<V2Drafting />} />
             <Route path="/v2/contracts" element={<V2Contracts />} />
             <Route path="/v2/redline" element={<V2Redline />} />

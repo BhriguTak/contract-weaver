@@ -25,7 +25,7 @@ import {
 
 const mainNav = [
   { title: "Dashboard", url: "/v2", icon: LayoutDashboard },
-  { title: "Contract Drafting", url: "/v2/drafting", icon: FilePlus2 },
+  { title: "Contract Creation", url: "/v2/pipeline", icon: FilePlus2 },
   { title: "Contracts", url: "/v2/contracts", icon: FileStack },
   { title: "Redlining", url: "/v2/redline", icon: GitCompareArrows },
   { title: "Obligations", url: "/v2/obligations", icon: Shield },
