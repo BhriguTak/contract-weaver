@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import { V2Layout } from "./components/v2/V2Layout";
 import V2Dashboard from "./pages/v2/V2Dashboard";
 import V2Drafting from "./pages/v2/V2Drafting";
+import V2Pipeline from "./pages/v2/V2Pipeline";
 import V2Contracts from "./pages/v2/V2Contracts";
 import V2Redline from "./pages/v2/V2Redline";
 import V2Upload from "./pages/v2/V2Upload";
