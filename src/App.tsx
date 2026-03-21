@@ -46,6 +46,7 @@ const App = () => (
           {/* V2 Platform */}
           <Route element={<V2Layout />}>
             <Route path="/v2" element={<V2Dashboard />} />
+            <Route path="/v2/pipeline" element={<V2Pipeline />} />
             <Route path="/v2/drafting" element={<V2Drafting />} />
             <Route path="/v2/contracts" element={<V2Contracts />} />
             <Route path="/v2/redline" element={<V2Redline />} />
